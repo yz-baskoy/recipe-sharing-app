@@ -1,0 +1,8 @@
+blog app:
+
+1) modelleri taska göre yap
+2) imagelar sayfada gözüksün
+3) pagination'ın pozisyonunu ayarla
+4) post_detail olmuyor??
+
+authentication app:
