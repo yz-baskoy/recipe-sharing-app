@@ -13,6 +13,7 @@ def LikeView(request, pk):
     return HttpResponseRedirect(reverse('blog:post-detail', args=[str(pk)]))
 
 # view function to create new post from homepage
+
 def post_view(request):
 
     if request.method == 'POST':
@@ -51,8 +52,6 @@ class PostDetail(DetailView):
         total_likes = liked_post.total_likes()
         context["total_likes"] = total_likes
         return context
-
-
 
 def success(request):
     return HttpResponse('done!')        
