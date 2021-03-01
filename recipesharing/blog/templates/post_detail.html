@@ -27,6 +27,20 @@
 {% endfor %}
 {{ post.description }}
 <br>
+<form action="{% url 'blog:rate_post' post.pk %}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="exampleFormControlSelect1">Rate recipe</label>
+        <select class="form-control" id="exampleFormControlSelect">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+    </div>
+    <button type="submit", name="post_id", value="{{ post.id }}", class="btn btn-primary btm-sm">Rate</button> 
+</form>
 
-
+{{ post.rate }}
 {% endblock %}
