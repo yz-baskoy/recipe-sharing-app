@@ -10,7 +10,13 @@
 <br>
 <form action="{% url 'blog:like_post' post.pk %}" method="post">
     {% csrf_token %}
-    <button type="submit", name="post_id", value="{{ post.id }}", class="btn btn-primary btm-sm">Like</button> ({{ total_likes }})
+    {% if liked %}
+        <button type="submit", name="post_id", value="{{ post.id }}", class="btn btn-danger btm-sm">Dislike</button> 
+        {% else %}
+        <button type="submit", name="post_id", value="{{ post.id }}", class="btn btn-primary btm-sm">Like</button> 
+    {% endif %}
+    
+    ({{ total_likes }})
 </form>
 <b>Ingredients</b>
 <br>

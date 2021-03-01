@@ -3,27 +3,29 @@ from .forms import *
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Post, Ingredients
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import DetailView
+from django.views.generic import DetailView, CreateView
 from django.db.models import Q
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.contrib.auth.decorators import login_required
 
 def LikeView(request, pk):
     post = get_object_or_404(Post, id=request.POST.get('post_id'))
-    post.likes.add(request.user)
+    liked = False
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+        liked = False
+    else:
+        post.likes.add(request.user)
+        liked = True
+   
     return HttpResponseRedirect(reverse('blog:post-detail', args=[str(pk)]))
 
 # view function to create new post from homepage
-
-def post_view(request):
-
-    if request.method == 'POST':
-        form = RecipeForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('blog:post_list')
-    else:
-        form = RecipeForm()
-    return render(request, 'new_post.html', {'form' : form})
+class CreateNewPost(CreateView):
+    model = Post
+    form_class = RecipeForm
+    success_url = reverse_lazy('blog:post_list')
+    template_name = 'new_post.html'
 
 # view function to display a list of posts on the homepage
 def post_list(request):
@@ -50,7 +52,13 @@ class PostDetail(DetailView):
         context = super(PostDetail, self).get_context_data(*args, **kwargs)
         liked_post = get_object_or_404(Post, id=self.kwargs['pk'])
         total_likes = liked_post.total_likes()
+
+        liked = False
+        if liked_post.likes.filter(id=self.request.user.id).exists():
+            liked = True
+        
         context["total_likes"] = total_likes
+        context["liked"] = liked
         return context
 
 def success(request):

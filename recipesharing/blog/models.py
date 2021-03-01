@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now 
-from django.urls import reverse
-
 
 DIF_LEVEL = (
     ('easy','EASY'),
@@ -28,6 +26,7 @@ class Post(models.Model):
     difficulty = models.CharField(max_length=8, choices=DIF_LEVEL, default='easy')
     select_ingredients = models.ManyToManyField(Ingredients)
     likes = models.ManyToManyField(User, related_name='blog_posts')
+    rate = models.IntegerField(User, default=0)
 
     def total_likes(self):
         return self.likes.count()
