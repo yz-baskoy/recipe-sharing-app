@@ -6,23 +6,23 @@
 </div>
 
 <div id="post-list">
-<h3>Recipes must list in homepage</h3>
-{% for post in posts %}
-<h3>
-    <a href="{% url 'blog:post-detail' post.pk %}">{{ post.title }}</a>
-</h3>    
-<p class="date">
-Published by {{ post.author }}
-</p>
-<p>{{ post.date }}</p>
+    {% for post in posts %}
+    <h3>
+        <a href="{% url 'blog:post-detail' post.pk %}">{{ post.title }}</a>
+    </h3>
+    <p class="date">
+        Published by {{ post.author }}
+    </p>
+    <p>{{ post.date }}</p>
 
-<img class="imga" src="{{ post.image.url }}">
+    <img class="imga" src="{{ post.image.url }}">
 
-{{ post.description|truncatewords:30|linebreaks }}
-{% endfor %}
+    {{ post.description|truncatewords:15|linebreaks }}
+    {% endfor %}
 </div>
+
 <div id="p-position">
-<hr>
-{% include "pagination.html" with page=posts %}
+    <hr>
+    {% include "pagination.html" with page=posts %}
 </div>
 {% endblock %}

@@ -11,36 +11,27 @@
 <form action="{% url 'blog:like_post' post.pk %}" method="post">
     {% csrf_token %}
     {% if liked %}
-        <button type="submit", name="post_id", value="{{ post.id }}", class="btn btn-danger btm-sm">Dislike</button> 
-        {% else %}
-        <button type="submit", name="post_id", value="{{ post.id }}", class="btn btn-primary btm-sm">Like</button> 
+    <button type="submit" , name="post_id" , value="{{ post.id }}" , class="btn btn-danger btn-sm">Dislike</button>
+    {% else %}
+    <button type="submit" , name="post_id" , value="{{ post.id }}" , class="btn btn-primary btn-sm">Like</button>
     {% endif %}
-    
+
     ({{ total_likes }})
 </form>
 <b>Ingredients</b>
 <br>
 {% for select_ingredients in post.select_ingredients.all %}
 <ul>
-<li>{{ select_ingredients }}</li>
+    <li>{{ select_ingredients }}</li>
 </ul>
 {% endfor %}
 {{ post.description }}
 <br>
+<hr>
 <form action="{% url 'blog:rate_post' post.pk %}" method="post">
     {% csrf_token %}
-    <div class="form-group">
-        <label for="exampleFormControlSelect1">Rate recipe</label>
-        <select class="form-control" id="exampleFormControlSelect">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
-        </select>
-    </div>
-    <button type="submit", name="post_id", value="{{ post.id }}", class="btn btn-primary btm-sm">Rate</button> 
+    {{ rateform }}
+<button type="submit" class="btn btn-primary btn-sm">Rate</button>
 </form>
 
-{{ post.rate }}
 {% endblock %}

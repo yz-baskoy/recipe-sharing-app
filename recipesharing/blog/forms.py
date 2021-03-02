@@ -10,3 +10,8 @@ class RecipeForm(forms.ModelForm):
             'difficulty': forms.Select(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'})
         }
+
+class RateForm(forms.ModelForm):
+    class Meta:
+        model = Rate
+        fields = ['score']

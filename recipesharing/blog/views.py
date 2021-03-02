@@ -8,11 +8,14 @@ from django.db.models import Q
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 
-def RateView(request,pk):
-    post = get_object_or_404(Post, id=request.POST.get('post_id'))
-    post.rate.add(request.user)
-    return HttpResponseRedirect(reverse('blog:post-detail', args=[str(pk)]))
-
+def rate_view(request,pk):
+    if request.method == 'POST': 
+        post = get_object_or_404(Post, id=pk)
+        form = RateForm(request.POST)
+        if form.is_valid(): 
+            score = form.cleaned_data['score']
+            Rate.objects.create(user=request.user, score=score, post=post)
+            return HttpResponseRedirect(reverse('blog:post-detail', args=[str(pk)]))
 
 def LikeView(request,pk):
     post = get_object_or_404(Post, id=request.POST.get('post_id'))
@@ -59,16 +62,13 @@ class PostDetail(DetailView):
         liked_post = get_object_or_404(Post, id=self.kwargs['pk'])
         total_likes = liked_post.total_likes()
 
-        rated_post = get_object_or_404(Post, id=self.kwargs['pk'])
-        avg_rate = rated_post.rate_avg()
-
         liked = False
         if liked_post.likes.filter(id=self.request.user.id).exists():
             liked = True
         
         context["total_likes"] = total_likes
         context["liked"] = liked
-        context["avg_rate"] = avg_rate
+        context["rateform"] = RateForm()
         return context
 
 def success(request):

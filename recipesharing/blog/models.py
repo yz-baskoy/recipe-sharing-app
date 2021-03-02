@@ -27,10 +27,6 @@ class Post(models.Model):
     difficulty = models.CharField(max_length=8, choices=DIF_LEVEL, default='easy')
     select_ingredients = models.ManyToManyField(Ingredients)
     likes = models.ManyToManyField(User, related_name='blog_posts')
-    rate = models.ManyToManyField(User, default=0)
-
-    def rate_avg(self):
-        return self.rate.count()
 
     def total_likes(self):
         return self.likes.count()
@@ -38,4 +34,7 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
-    
+class Rate(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rating')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='rating')
+    score = models.IntegerField()
