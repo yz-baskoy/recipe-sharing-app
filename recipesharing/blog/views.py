@@ -3,7 +3,7 @@ from .forms import *
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Post, Ingredients
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import DetailView, CreateView
+from django.views.generic import DetailView, CreateView, ListView
 from django.db.models import Q
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -37,21 +37,13 @@ class CreateNewPost(CreateView):
     template_name = 'new_post.html'
 
 # view function to display a list of posts on the homepage
-def post_list(request):
-    posts = Post.objects.all().order_by('-date')
-    query = request.GET.get('q')
-    if query:
-        posts = posts.filter(Q(title__icontains=query) or Q(author__icontains=query) or Q(description__icontains=query)).distinct()
+class PostList(ListView):
+    model = Post
+    context_object_name = 'posts'
+    template_name = 'list.html'
+    paginate_by = 2
+    ordering = '-date' 
 
-    paginator = Paginator(posts, 2)
-    page = request.GET.get('page')
-    try:
-        posts = paginator.page(page)
-    except PageNotAnInteger:
-        posts = paginator.page(1)
-    except EmptyPage:
-        posts = paginator.page(paginator.num_pages)  
-    return render(request, 'list.html', {'page': page, 'posts': posts})
 
 class PostDetail(DetailView):
     model = Post
