@@ -6,6 +6,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import DetailView, CreateView, ListView
 from django.db.models import Q
 from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
 def rate_view(request,pk):
@@ -17,7 +18,7 @@ def rate_view(request,pk):
             Rate.objects.create(user=request.user, score=score, post=post)
             return HttpResponseRedirect(reverse('blog:post-detail', args=[str(pk)]))
 
-def LikeView(request,pk):
+def like_view(request,pk):
     post = get_object_or_404(Post, id=request.POST.get('post_id'))
     liked = False
     if post.likes.filter(id=request.user.id).exists():
@@ -29,21 +30,19 @@ def LikeView(request,pk):
    
     return HttpResponseRedirect(reverse('blog:post-detail', args=[str(pk)]))
 
-# view function to create new post from homepage
+@method_decorator(login_required, name='dispatch')
 class CreateNewPost(CreateView):
     model = Post
     form_class = RecipeForm
     success_url = reverse_lazy('blog:post_list')
     template_name = 'new_post.html'
 
-# view function to display a list of posts on the homepage
 class PostList(ListView):
     model = Post
     context_object_name = 'posts'
     template_name = 'list.html'
     paginate_by = 2
     ordering = '-date' 
-
 
 class PostDetail(DetailView):
     model = Post
@@ -63,6 +62,14 @@ class PostDetail(DetailView):
         context["rateform"] = RateForm()
         return context
 
-def success(request):
-    return HttpResponse('done!')        
-
+class SearchView(ListView):
+    model = Post
+    template_name = 'list.html'
+    context_object_name = 'posts'
+    
+    def get_queryset(self):
+        search = self.request.GET.get('search')
+        if search:
+            query = self.model.objects.filter(title__icontains=search)
+            return query
+         
