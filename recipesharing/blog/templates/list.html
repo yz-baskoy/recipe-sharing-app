@@ -1,8 +1,15 @@
 {% extends "base.html" %}
-{% block title %}RecipeM8{% endblock %}
+{% block title %}RecipeMate{% endblock %}
 {% block content %}
 <div id="sidebar">
-    <h2>Top ingredients</h2>
+    <h2>Top Used Ingredients</h2>
+    {% for ings in ingredients %}
+    <ul>
+        <li>
+            {{ ings }} ({{ ings.num_ingredients }})
+        </li>
+    </ul>
+    {% endfor %}
 </div>
 
 <div id="post-list">
@@ -18,6 +25,7 @@
     <img class="imga" src="{{ post.image.url }}">
 
     {{ post.description|truncatewords:15|linebreaks }}
+    <div>{{ post.total_likes }} people liked-<a href="{% url 'blog:edit_view' post.pk %}">Edit</a></div>
     {% endfor %}
 </div>
 

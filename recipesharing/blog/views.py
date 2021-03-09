@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Post, Ingredients
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import DetailView, CreateView, ListView
-from django.db.models import Q
+from .models import Post, Ingredients, Rate
+from django.core.paginator import Paginator
+from django.views.generic import DetailView, CreateView, ListView, UpdateView
+from django.db.models import Q, Count
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -37,12 +37,24 @@ class CreateNewPost(CreateView):
     success_url = reverse_lazy('blog:post_list')
     template_name = 'new_post.html'
 
+class UpdatePostView(UpdateView):
+    model = Post
+    template_name = 'edit_post.html'
+    form_class = RecipeForm
+    pass
+
 class PostList(ListView):
     model = Post
     context_object_name = 'posts'
     template_name = 'list.html'
     paginate_by = 2
     ordering = '-date' 
+
+    def get_context_data(self, **kwargs):
+        context = super(PostList, self).get_context_data(**kwargs)
+        context["ingredients"] = Ingredients.objects.annotate(
+            num_ingredients = Count("post")).order_by('-num_ingredients')
+        return context
 
 class PostDetail(DetailView):
     model = Post
