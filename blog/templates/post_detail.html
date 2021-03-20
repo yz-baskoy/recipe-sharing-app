@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<!--post detayları bu sayfada olmalı-->
+<h1>{{ post.title }}</h1>
+<h4>{{ post.author }}</h4>
+<p>{{ post.date }}</p>
+<img class="imga" src="{{ post.image.url }}">
+<br>
+<form action="{% url 'blog:like_post' post.pk %}" method="post">
+    {% csrf_token %}
+    {% if liked %}
+    <button type="submit" , name="post_id" , value="{{ post.id }}" , class="btn btn-danger btn-sm">Dislike</button>
+    {% else %}
+    <button type="submit" , name="post_id" , value="{{ post.id }}" , class="btn btn-primary btn-sm">Like</button>
+    {% endif %}
+
+    ({{ total_likes }})
+</form>
+<b>Ingredients</b>
+<br>
+{% for select_ingredients in post.select_ingredients.all %}
+<ul>
+    <li>{{ select_ingredients }}</li>
+</ul>
+{% endfor %}
+{{ post.description }}
+<br>
+<hr>
+<form action="{% url 'blog:rate_post' post.pk %}" method="post">
+    {% csrf_token %}
+    {{ rateform }}
+<button type="submit" class="btn btn-primary btn-sm">Rate</button>
+</form>
+
+{% endblock %}
