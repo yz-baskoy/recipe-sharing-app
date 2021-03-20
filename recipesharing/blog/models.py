@@ -9,6 +9,14 @@ DIF_LEVEL = (
     ('hard','HARD'),
 )
 
+CHOISES = (
+    (1, '1 - sobad'),
+    (2, 'notbad'),
+    (3, 'soso'),
+    (4, 'nice'),
+    (5, 'perfect'),
+)
+
 class Ingredients(models.Model):
     ingredients = models.CharField(max_length=200, null=True)
 
@@ -34,4 +42,7 @@ class Post(models.Model):
 class Rate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rating')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='rating')
-    score = models.IntegerField()
+    score = models.PositiveSmallIntegerField(default=0, choises=CHOISES )
+
+    def avg_rates(self):
+        return self.score.Avg()

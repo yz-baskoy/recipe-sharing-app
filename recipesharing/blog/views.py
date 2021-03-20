@@ -3,11 +3,12 @@ from .forms import *
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Post, Ingredients, Rate
 from django.core.paginator import Paginator
-from django.views.generic import DetailView, CreateView, ListView, UpdateView
 from django.db.models import Q, Count
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+
+from django.views.generic import DetailView, CreateView, ListView, UpdateView
 
 def rate_view(request,pk):
     if request.method == 'POST': 
@@ -17,7 +18,9 @@ def rate_view(request,pk):
             score = form.cleaned_data['score']
             Rate.objects.create(user=request.user, score=score, post=post)
             return HttpResponseRedirect(reverse('blog:post-detail', args=[str(pk)]))
-
+    else:
+        form =RateForm()
+        
 def like_view(request,pk):
     post = get_object_or_404(Post, id=request.POST.get('post_id'))
     liked = False
@@ -41,7 +44,7 @@ class UpdatePostView(UpdateView):
     model = Post
     template_name = 'edit_post.html'
     form_class = RecipeForm
-    pass
+    success_url = reverse_lazy('blog:post_list') 
 
 class PostList(ListView):
     model = Post

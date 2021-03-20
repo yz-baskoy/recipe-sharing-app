@@ -15,17 +15,21 @@
 <div id="post-list">
     {% for post in posts %}
     <h3>
-        <a href="{% url 'blog:post-detail' post.pk %}">{{ post.title }}</a>
+        <a href="{% url 'blog:post_detail' post.pk %}">{{ post.title }}</a>
     </h3>
-    <p class="date">
-        Published by {{ post.author }}
-    </p>
-    <p>{{ post.date }}</p>
+    <p>Published by {{ post.author }} - {{ post.date }}</p>
 
     <img class="imga" src="{{ post.image.url }}">
 
     {{ post.description|truncatewords:15|linebreaks }}
-    <div>{{ post.total_likes }} people liked-<a href="{% url 'blog:edit_view' post.pk %}">Edit</a></div>
+    <div>
+        {{ post.total_likes }} people liked-
+        {% if user.is_authenticated %}
+            {% if user.id == post.author.id %}
+                <a href="{% url 'blog:edit_view' post.pk %}">Edit</a>
+            {% endif %}
+        {% endif %}
+    </div>
     {% endfor %}
 </div>
 
