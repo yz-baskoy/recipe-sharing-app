@@ -6,7 +6,7 @@ app_name = 'blog'
 
 urlpatterns = [
     path('sharearecipe/', CreateNewPost.as_view(), name='post_view'),
-    path('edit/<int:pk>', UpdatePostView.as_view(), name='edit_view' ),
+    path('edit/<int:pk/>', UpdatePostView.as_view(), name='edit_view'),
     path('homepage/', PostList.as_view(), name='post_list'),
     path('homepage/<int:pk>/', PostDetail.as_view(), name='post_detail'),
     path('like/<int:pk>/', views.like_view, name='like_post'),
